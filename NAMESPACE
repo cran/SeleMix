@@ -1,0 +1,4 @@
+#exportPattern("^[^\\.]")
+export(ml.est,pred.y,sel.edit,sel.pairs)
+#import(mvtnorm)
+
