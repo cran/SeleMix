@@ -1,0 +1,8 @@
+version 0.9.0
+- some work on vignette
+- Fixed a bug in ml.est: a vector of covariate is now accepted.
+- Improved checks in sel.edit
+- Added 'legend' option for sel.pairs (defaults to TRUE)
+
+version 0.8.1
+- initial version

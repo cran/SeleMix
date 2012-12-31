@@ -31,8 +31,10 @@ ml.est <- function (y, x=NULL, model = "LN", lambda=3,  w=0.05, lambda.fix=FALSE
       warning(paste("Input matrix y contains", length(ind.NA), " (%",length(ind.NA)*100/nrow(y) ,
       ") rows with missing values not included in parameter's estimation\n" ))
       y <- y[-ind.NA,,drop=FALSE]
-      if (length(x) > 0)
+      if (length(x) > 0) {
+	      x <-as.matrix(x) 
           x <- x[-ind.NA,,drop=FALSE]
+	  }	  
    }
 #------------------------------------------------------------------------------
 #        CONTROLLI SUI PARAMETRI 
@@ -84,7 +86,7 @@ ml.est <- function (y, x=NULL, model = "LN", lambda=3,  w=0.05, lambda.fix=FALSE
       Var <- cbind(x[,2],y[,1])  
    }     
    
-   dev.new()
+ #  windows()
    par(mfrow=c(2,1))
   }
   

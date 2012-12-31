@@ -1,0 +1,430 @@
+\documentclass[a4paper]{article}
+
+% \VignetteIndexEntry{An R Package for Selective Editing}
+\SweaveOpts{echo=true}
+
+\usepackage{natbib}
+\usepackage{graphics}
+\usepackage{amsmath}
+%\usepackage{indentfirst}
+\usepackage[utf8]{inputenc}
+\usepackage{Sweave}
+
+
+%\usepackage{makeidx}
+%\makeindex
+
+%% additional commands
+
+\newcommand{\pkg}[1]{\mbox{\textbf{#1}}}
+\newcommand{\proglang}[1]{\mbox{\textsf{#1}}}
+\newcommand{\dQuote}[1]{``#1''}
+\newcommand{\code}[1]{\texttt{#1}}
+
+
+\newcommand{\yab}{{\bf y}_{ab}}
+\newcommand{\Yab}{{\bf Y}_{ab}}
+\newcommand{\yabh}{y_{ab}^h}
+\newcommand{\Yabh}{Y_{ab}^h}
+\newcommand{\ci}{c_{a,b}}
+\newcommand{\cci}{\hat c_{a,b}}
+\newcommand{\di}{d(\yab , {\bf y} )}
+\newcommand{\kap}{H}
+\newcommand{\matc}{{\bf c}}
+\newcommand{\varc}{{\bf C}}
+\newcommand{\setc}{{\mathcal C}}
+\newcommand{\alfa}{\ensuremath{\mathbf \alpha}}
+\newcommand{\bfbeta}{\ensuremath{\mathbf \beta}}
+\newcommand{\setm}{{\mathcal M}}
+\newcommand{\setu}{{\mathcal U}}
+\newcommand{\seta}{{\mathcal A}}
+\newcommand{\setb}{{\mathcal B}}
+\newcommand{\setd}{{\mathcal D}}
+\newcommand{\setf}{{\mathcal F}}
+\newcommand{\seth}{{\mathcal H}}
+\newcommand{\setv}{{\mathcal V}}
+\newcommand{\setg}{{\mathcal G}}
+\newcommand{\setp}{{\mathcal P}}
+\newcommand{\sett}{{\mathcal T}}
+\newcommand{\setr}{{\mathcal R}}
+
+\newcommand{\setx}{{\mathcal X}}
+\newcommand{\sety}{{\mathcal Y}}
+\newcommand{\setz}{{\mathcal Z}}
+%\newcommand{\vecteta}{{\bm \theta}}
+\newcommand{\vecpi}{{\mathbf \pi}}
+\newcommand{\vecmu}{{\mathbf \mu}}
+\newcommand{\vecbeta}{{\mathbf \beta}}
+\newcommand{\vecalfa}{{\mathbf \alpha}}
+\newcommand{\vecepsilon}{{\mathbf \epsilon}}
+\newcommand{\vecgamma}{{\mathbf \gamma}}
+\newcommand{\vecuno}{{\bm 1}}
+\newcommand{\veczero}{{\bm 0}}
+\newcommand{\veca}{{\bm a}}
+
+\newcommand{\vecx}{\mathbf{x}}
+\newcommand{\vecy}{\mathbf{y}}
+\newcommand{\vecz}{\mathbf{z}}
+\newcommand{\vecv}{\mathbf{v}}
+\newcommand{\vect}{\mathbf{t}}
+\newcommand{\vecu}{\mathbf{u}}
+\newcommand{\vecn}{\mathbf{n}}
+\newcommand{\vecr}{\mathbf{r}}
+\newcommand{\vece}{\mathbf{e}}
+\newcommand{\vecb}{\mathbf{b}}
+\newcommand{\vecE}{\mathbf{E}}
+\newcommand{\vecX}{\mathbf{X}}
+\newcommand{\vecY}{\mathbf{Y}}
+\newcommand{\vecZ}{\mathbf{Z}}
+\newcommand{\vecU}{\mathbf{U}}
+\newcommand{\vecB}{\mathbf{B}}
+\newcommand{\vecV}{\mathbf{V}}
+\newcommand{\vecN}{\mathbf{N}}
+\newcommand{\vecI}{\mathbf{I}}
+\newcommand{\vecR}{\mathbf{R}}
+\newcommand{\vecG}{\mathbf{G}}
+\newcommand{\vecT}{\mathbf{T}}
+\newcommand{\veceps}{\mathbf {\epsilon}}
+
+\newcommand{\sampleab}{A\cup B}
+\newcommand{\vecPsi}{{\mathbf \Psi}}
+\newcommand{\vecpsi}{{\mathbf \psi}}
+\newcommand{\vecFi}{{\mathbf \Phi}}
+\newcommand{\vecteta}{{\mathbf \theta}}
+\newcommand{\vecSigma}{{\mathbf \Sigma}}
+\newcommand{\vecxi}{{\mathbf \xi}}
+
+\newcommand{\dq}[1]{``#1"}
+
+
+\begin{document}
+\SweaveOpts{concordance=TRUE}
+\SweaveOpts{keep.source=TRUE}
+
+
+
+\title{ \pkg{SeleMix}: an \proglang{R} Package for Selective Editing}
+%\title{Use of Contamination Models for Selective Editing}
+
+\author{Ugo Guarnera, Maria Teresa Buglielli}
+
+\maketitle
+At the moment, this is only a stub of a vignette.
+\section{Introduction}
+Selective editing is the art of finding influential errors in survey data, i.e., errors having the potential highest impact on the target estimates. In practice, units are prioritized according to a {\it score function} based on a \dq{risk component} and an \dq{influence component}
+(\cite{Lawrence:1994}, \cite{Lawrence:2000}, \cite{Latouche:1992}).
+SeleMix is an \proglang{R} package \cite{R:2012} for selective editing based on expliciltly modeling both true data and error mechanism. True data are modeled through a normal or log-normal distribution, and the \dq{ intermittent nature} of the error mechanism is captured through a Bernoullian random variable associated with the error occurrence. Given the event that some values are not correctly reported in a unit, the error is supposed to be additive and Gaussian with zero mean and covariance matrix proportional to the covariance matrix of the true data.
+The resulting distribution for the observed data is a mixture of two Gaussian distributions with the same mean vector but proportional covariance matrices, where the \dq{largest} one corresponds to contaminated data. For each unit, the probability of belonging to the mixture component that corresponds to contaminated data is the risk component, while the influence component for a given variable is obtained as expected difference between true and observed value of that variable conditioned on the observed value and on the event that the observation is contaminated. Thus, the scores can be interpreted as expected values of the errors conditional on the observed data. Consequently, a set of units can be selected so that the expected residual error in data is below a prefixed threshold (\cite{bug:2010}, \cite{dizio:2011}). 
+
+
+\section{The contamination model}
+\label{model}
+
+True data, possibly in log-scale are represented as a $n \times p $ matrix $\vecY^*$ of $n$ independent realizations from a random $p$-vector assumed to follow a normal distribution whose parameters may depend on some set of $q$ covariates not affected by error. The resulting regression model is:    
+\begin{equation}
+\label{true}
+\vecY^*=\vecX \vecB + \vecU
+\end{equation}
+
+where $\vecX$ is a $n \times q $ matrix whose rows are the measures of the $q$ covariates on the $n$ units, $\vecB$
+is the $q \times p $ matrix of the coefficients, and $ \vecU$ is the $n \times p $ matrix of normal residuals: \\ 
+$$
+\vecU \sim  N(\cdot ; 0 ,\vecSigma)
+$$ 
+
+As a particular case, the set of $X$-variates may be empty, so that variables $Y_i, \;\; (i= 1 \ldots , n) $ are normally distributed with the same mean vector $\mu$. In the previous model, it is
+We assume that the vector $Y_i$ of observed items for unit $i$ is error-free or erroneous according to a Bernoulli r.v. $I_i$ with parameter $\pi$, where 
+$I_i =1$ if an error occurs and $I_i =0$ otherwise ($i=1,\ldots,n$). Further, given that $I_i =1$, the error follows an additive mechanism
+represented by a Gaussian r.v.  $\epsilon$ with zero mean and covariance matrix $\vecSigma_\epsilon$ proportional to $\vecSigma$, i.e., given  
+$\left\{I_i =1 \right\}$:
+$$
+ Y_i=Y^*_i+ \epsilon_i,  \;\;\; \epsilon_i \sim N(0,\Sigma_\epsilon), \;\; \Sigma_\epsilon=(\alpha-1)\Sigma, \;\; \alpha>1.
+$$
+%$ \veceps \sim N(0,\vecSigma_\epsilon)\;\;$,  $\vecSigma_\epsilon=(\alpha-1)\vecSigma\;$,   $\alpha>1$. \\ 
+\vspace{0.5 cm}
+The error model can be formally expressed through the conditional distribution:
+%\vspace{0.5 cm}
+\begin {equation}
+\label{err}
+f(y_i|y^*_i)=(1-\pi)\delta(y_i-y^*_i) + \pi N(y_i ;y^*_i, \Sigma_\epsilon).
+\end {equation}
+
+\vspace{0.4cm}
+
+where $\pi$ ({\it mixing weight}) represents the \dq{a priori} probability of contamination and $\delta( t^\prime - t) $ is the delta-function with mass at $t$.
+
+It is crucial the intermittent nature of the error implied by the introduction of the Bernoullian variables. Due to this assumption, it is conceptually possible to think of data as partitioned into correct and erroneous, and to estimate, for each observation, the probability of being correct or corrupted. 
+
+The distribution of the observed data is easily derived multiplying the true data density which leads to formula (\ref{true}) and the error density (\ref{err}), and integrating over $Y^*$ :
+
+\begin{equation}
+\label{obs}
+f(y_i)=(1-\pi) N(y_i ; \mu_i,\Sigma) + \pi N(y_i; \mu_i,\alpha \Sigma),
+\end{equation}
+
+where $\mu_i =\vecB^\prime x_i$.
+
+Expression (\ref{obs}) represents a mixture of two regression models having the same coefficient matrix $\vecB$ but different (though proportional) residual variance-covariance matrices. The last distribution relates to observed data and can be estimated by maximizing the likelihood based on $n$ sample units via an ECM algorithm (see \cite {Meng:1993}). 
+
+
+\section{Selective editing}
+\label{editing}  
+
+Selective editing is based on comparison between observed values and predictions or 'anticipated values' for true unobserved data. In SeleMix, predictions are obtained from the distribution $f(y^*_i|y_i)$ of the true data conditional on the observed data (possibly including values of error-free covariates $X$ not appearing in the notation). A straightforward application of the Bayes formula provides:  
+\begin{equation}
+\label{cond_dist}
+f(y^*_i|y_i) = \tau_1(y_i)\delta(y^*_i-y_i) + \tau_2(y_i)N(y^*_i;\tilde\mu_{i},\tilde\Sigma)
+\end{equation}
+
+where: 
+
+$$
+\tilde\mu_{i} = \frac{(y_i + (\alpha-1)\mu_{i})}{\alpha}; \;\;\; \tilde\Sigma = \left(1-\frac{1}{\alpha}\right)\Sigma,
+$$
+
+$\delta(y^*_i-y_i)$ is the delta function with mass at $y_i$, and $\tau_1(y_i)$ , $\tau_2(y_i)$ are the posterior probabilities that a unit with observed values $(y_i)$  belongs to correct and erroneous data group respectively: 
+
+\begin{eqnarray*}
+\tau_1(y_i)&=&Pr(y_i=y_i^*|y_i)= \frac{(1- \pi) N(y_i ; \mu_{i},\Sigma)}{(1-\pi) N(y_i ; \mu_i,\Sigma)+ \pi N(y_i;\mu_{i},\alpha \Sigma)},\\
+\tau_2(y_i)&=& Pr(y_i\neq y_i^*|y_i)= 1- \tau_1(y_i),\\ 
+  i& =& 1,\ldots,n. \\
+\end{eqnarray*}
+
+
+Predictions are defined in terms of the conditional expected values
+$\tilde{y}_i=E(y^*_i |y_i )$. From (\ref{cond_dist}) it follows:
+\begin{equation}
+\label{cond_exp}
+ \tilde{y}_i = \tau_1(y_i)y_i + \tau_2(y_i)\tilde\mu_{i}, \;\;\;\; i=1,\ldots,n. 
+\end{equation}
+Correspondingly, we can define the \dq{expected error} as 
+\begin{equation}
+\label{experr}
+y_i -  \tilde{y}_i = \tau_2(y_i)(y_i-\tilde\mu_{i}).
+\end{equation}
+
+The last expression makes it natural to interpret $\tau_2$ and $y_i-\tilde\mu_{i}$  as  \dq { risk component} and \dq  {influence component} respectively to be considered in the score function definition. In practice, the method uses the previous formulas with the MLEs of the involved parameters in place of the true parameters. 
+
+The methodology can be easily adapted to the lognormal distribution, which is most frequently used in case of business surveys. In fact, for $i=1,\ldots, n$,  let 
+$Y^*_i = \ln Z^*_i, \;\; Y_i = \ln Z_i $, where  $Z^*_i, Z_i$ represent the variables associated to true and contaminated data respectively. Then, it follows that the distribution of $Z^*_i$ given $z_i$ is:
+$$
+f(z^*_i|z_i)=\tau_1(\ln(z_i))\delta(z^*_i-z_i) + \tau_2(\ln (z_i))LN(z^*_i;\tilde\mu_i,\tilde \Sigma),
+$$
+where $LN(\cdot;\mu,\Sigma)$ denotes the lognormal density with parameters $\mu$ and $\Sigma$.\\
+
+In the following, the MLE of the model parameters will be denoted by  $\hat\pi, \hat B,\hat\Sigma, \hat\lambda$, analogously $\hat\tau_1(y_i)$ and $\hat{\tilde\mu}_i$ will denote the corresponding estimates of the posterior probabilities and of the mean vectors $\tilde\mu_i$ respectively.
+
+
+In SeleMix the score function is defined in terms of the estimated expected error (see formula \ref{experr}), so that the threshold value can be directly linked to the level of accuracy of the estimates of interest. 
+The units will be selected in a such a way that the estimated residual error is below a prefixed level of accuracy $\eta$ that is actually the threshold value.
+
+
+Let us suppose the target aggregate to estimate is the total of the variable $Y_j$, i.e., $T^*_j=\sum_{i=1}^n w_i y^*_{ij}$. The relative individual error for the $i$th unit with respect to the variable $Y_j$ is defined as the ratio between the (weighted) expected error and an estimate of the target paprameter $\hat{T}_j$, that is
+\begin{equation}\label{score}
+r_{ij}=\frac{w_i({y_{ij}}-\hat{y}_{ij})}{\hat{T}_j}.
+\end{equation}
+
+Note that, the estimated expected error is $y_i -  \hat{y}_i = \hat{\tau}_2(y_i)(y_i-\hat{\tilde{\mu}}_{i})$ , and $\hat\tau_2$ and $y_i-\hat{\tilde{\mu}}_{i}$  can be thought of as an estimate of the\dq { risk component} and \dq  {influence component} respectively.
+
+The local score function for the variable $Y_j$ used in SeleMix is $S_{ij}=|r_{ij}|$. Different local scores are combined togheter in a single \dq{global score} $GS_i=max_j S_{ij}$. 
+ 
+In order to illustrate the stopping criterion for selections of inlfluential errors, define $R_{ij}$ as the absolute value of the expected residual relative error for the variable $Y_j$ remaining in data after removing errors in the first $i$ units, that is $R_{ij}= \big|\displaystyle \sum_{k \ge i}^n r_{kj} \big|$. 
+
+Once an \dq{accuracy level} (threshold) $\eta$ is chosen, the selective editing procedure consists of: 
+
+\begin{enumerate}
+\item order the observations with respect to $GS_i$ (decreasing order);
+\item find $\bar{k}$ such that $\bar{k}= min \left\{k^* \in (1,\ldots,n)\;\; | \;max_j R_{kj} < \eta, \;\; \forall k>k^*, \right\}$, i.e., 
+select the first $\bar{k}$ units such that, all the residual errors $R_{kj}$ computed from the $(\bar{k}+1)$th to the last observation are below $\eta$.
+\end{enumerate}
+
+This algorithm ensures that the expected error is below $\eta$ for all the totals of all the variables $Y_j$. Moreover, it is easy to show that  $S_{kj}\leq 2\eta\;\;  \forall k > \bar{k}, j=1,\ldots, J$, so that the expected error on each not revised unit is kept under control.
+
+The reference estimate $T^*_j$ to be used in the score definition can be obtained by using the preditions $\hat{y}_{ij}$:
+$$
+T^*_j=\sum_i w_i \hat{y}_{ij}.
+$$
+This is in fact the default choice in SeleMix.
+
+
+
+
+
+\section{Practical steps in an application of selective editing } \label{sec:steps}
+
+The operations required to individuate the influential errors using \pkg{SeleMix} can be summarised with these steps:
+
+\begin{itemize}
+
+  \item  analysis of data in order to choose the response variables $Y$ and verify if auxiliary information is available;
+  
+  \item  estimation of model parameters;
+  
+  \item  identification of critical units corresponding to the most influential errors;
+  
+  \item  interactive editing of critical units and automatic editing of npn-critical ones.
+  
+\end{itemize}
+
+\subsection{Example Data} \label{sec:data}
+
+These examples refer to the data frame \code{Labour} contained in the package \pkg{Ecdat} \citep{Ecdat:2012}.  
+
+
+\noindent
+By typing the following statements in the R environment 
+<<>>=
+library(Ecdat)
+data (Labour)
+@
+data frame is loaded.
+
+It contains 569
+
+ observations  on Belgian firms for 1996
+(see \code{Labour} help pages for details).
+The variables are:
+\begin{itemize}
+\item capital: total fixed assets, end of 1995  (million).
+\item labor: number of workers (employment).
+\item output: value added (million).
+\item wage: wage costs per worker (thousand).
+\end{itemize}
+
+The following Scatterplot shows that log-normality assumption seems to be plausible.
+
+
+\begin{center}
+<< fig=TRUE,echo=TRUE>>=
+ pairs (log(Labour))
+@
+\end{center}
+
+In the next paragraph, SeleMix is applied on variables \code{capital} and \code{output}  to detect possible influential errors. 
+
+
+% change some options
+<<echo=FALSE, results=hide>>=
+options(useFancyQuotes="UTF-8")
+#options(useFancyQuotes=FALSE)
+options(width=65)
+options(warn=-1)
+@
+
+\subsection{Two $Y$ variables} \label{sec:sec21}
+As a first example, consider variables \code{capital}  and \code{output} assuming that both are subject to measurement error.
+Thus, both variables are considered as $Y$ variables, and what is to be modeled is the their joint distribution. For simplicity, variables 
+ \code{capital}  and \code{output} will be denoted by $Y_1$ and  $Y_2$ respectively.
+
+\noindent
+The first step is to estimate the parameters of the contamination model using \code{ml.est} function, that in this case are:
+\begin{description}
+
+  \item \textbf{B}: the mean vector of the Gaussian distribution of ($Y_1, Y_2$) (returned in matrix form);
+  \item $\Sigma$: the covariance matrix;
+  \item $\lambda$: the variance inflaction factor;
+  \item \code{w}: the mixing proportion of the contamination model (a priori probability of being erroneous).
+
+\end{description}
+\noindent
+Input data are obtained by subsetting the two columns of data frame \code{Labour} corresponding to  \code{capital} and  \code{output}. 
+The input parameters of \code{ml.est} are set to their default values. 
+
+<< echo=TRUE >>=
+library (SeleMix)                          # Load the library
+y.names<- c("capital", "output" )          # vector of y variables
+
+est1 <- ml.est(y=Labour[,y.names])         # model estimation
+@
+
+\noindent
+The \code{ml.est} function returns, for each unit, a prediction for each $Y$ variable.
+<< >>=
+head(est1$ypred)     # predicted values
+@
+Outlier analysis can be performed based on the vector of posterior probabilities:
+<< >>=
+head(est1$tau,5)       # vector of posterior probability to be contaminated
+@
+\noindent
+units with posterior probability greater than the input parameter \code{t.outl} are flagged as outliers. Default value is 0.5. 
+
+<< >>=
+head(est1$outlier)       # vector of flag: 1=outlier
+n.outlier <-sum(est1$outlier)   # numbers of outliers 
+n.outlier
+@
+
+\noindent
+Two control parameters for checking the convergence of EM algorithm are also returned. Convergence is not attained if after \code{max.iter} iterations change in log-likelihood is greater than the input parameter \code{eps}.
+
+
+<< >>=
+est1$is.conv       # TRUE convergence is reached
+est1$n.iter        # number of iterations
+@
+\noindent
+In order to evaluate goodness of fit, BIC and CAIC are computed both for the contamination model and for the simple Gaussian model ($\lambda=0$). This parameter should be used to prevent overfitting.
+
+<< >>=
+est1$bic.aic       # bic and aic 
+@
+\noindent
+Both the scores show that the contamination model fits data better than the simple Gaussian model.\\
+
+The second step is to identify influential errors using function \code{sel.edit}.
+As a reference estimate to evaluate relative residual error in data after selective editing, the sum of (possibly weighted) predicted values is used (default option). Influential errors are detected by computing differences between observed (\code{y=Labour[,y.names]}) and predicted (\code{ypred=est1\$ypred}) values. It is possible to take into account unequal sample weigths in the differences and in the reference estimate using parameter \code{wgt}. The stopping criterion for the units to be selected  as influential is determined by  
+parameter \code{t.sel} (0.02 in the example).  
+
+<< >>=
+ sel1 <- sel.edit(y=Labour[,y.names], ypred=est1$ypred, t.sel=0.02)
+ (n.sel <-sum(sel1[,"sel"]))   # number of influential observations
+
+ head(sel1,3)                # first lines of result matrix
+@
+\noindent
+Table~\ref{tab:tab1} shows the number of outliers units versus the number of units that are flagged as influential.
+<<echo=FALSE >>=
+  appo <- addmargins( table(outlier=est1$outlier, influential=sel1[,"sel"]) )
+  dimnames(appo)  <- list(c("non outliers ", "n.outl", "Sum"),
+    c("non influential", "influential errors", "Sum"))
+@
+
+<<echo=FALSE,  results=tex>>=
+ library(xtable)
+ xtable(as.matrix(appo), caption="Outliers vs Influential Errors", label="tab:tab1",
+        display=rep("d",ncol(appo)+1) )
+
+@
+
+\noindent
+The scatterplot in Figure~\ref{fig:fig1} shows the same results in a graphical way.
+
+\begin{figure}
+
+\begin{center}
+<<fig1,fig=TRUE,echo=TRUE>>=
+sel.pairs (Labour[,y.names], est1$outlier, sel1[,"sel"])
+@
+\end{center}
+ \caption{Outliers vs Influential Errors}
+  \label{fig:fig1}
+\end{figure}
+
+
+
+\clearpage
+
+
+\bibliographystyle{chicago}
+\bibliography{selemix}
+
+
+
+
+
+
+
+
+
+\end{document}

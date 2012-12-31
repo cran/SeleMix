@@ -19,7 +19,8 @@ check.vars <- function (y, x, model="LN", parent="pred.y") {
    y <- as.matrix (y)
    n <- nrow(y)
    if (!is.null(x) & length(x) > 0) {
-      if (!is.numeric(as.matrix(x) ) )  {
+      x<- as.matrix(x)
+      if (!is.numeric(x) )  {
        lista$msg.err <- "Covariates must be numeric "
        lista$ret <- -9
      }   
@@ -30,7 +31,7 @@ check.vars <- function (y, x, model="LN", parent="pred.y") {
      else if (sum(is.na(x)) > 0)  {
         lista$msg.err <-"Covariates can not have missing values "
         lista$ret <- -9
-     } else if (nrow(as.matrix(x)) != nrow(y))  {
+     } else if (nrow(x) != nrow(y))  {
         lista$msg.err <-"Variables y and x must have the same number of rows"
         lista$ret <- -9
      }
@@ -44,6 +45,9 @@ check.vars <- function (y, x, model="LN", parent="pred.y") {
    if (lista$ret == -9)
        return (lista)
 #    WARNING
+
+
+
 
    ind0<-NULL
 #   PREPARAZIONE DATI IN BASE AL MODELLO

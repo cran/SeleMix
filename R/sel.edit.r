@@ -7,10 +7,20 @@
    ypred=as.matrix(ypred)
    n <- nrow(y)
    p <- ncol(y)
+   if (ncol(ypred) > p) 
+      stop("Response variables (y) and their predicted values (ypred) have a different number of columns")
+
+   if (length(t.sel) > p) 
+      stop("Length of threshold vector is greater of the variables number ") 
+   
+   if (length(t.sel) == 1) 
+      t.sel <- rep(t.sel,p)
+         
    if (is.null(colnames(y)))
        colnames(y)<-paste("y",1:p,sep="")
    if (is.null(colnames(ypred)))
        colnames(ypred)<-paste(colnames(y),".p",sep="")    
+       
  # Assumo che nel caso di y=NA il valore sia sostituito dal valore previsto dal modello 
  #  cioe' che la previsione sia esatta
    ind <- which(is.na(y))
@@ -34,34 +44,19 @@
                   score[ind_ord,,drop=FALSE], global.score[ind_ord] )
                  
 # CALCOLO DELL'ERRORE CUMULATO  
-  # cumulate<-matrix ( nrow=n, ncol=p)
-  #  sapply(1:p, function(i) { cumulate[ind_ord,i]<<-cumsum (errore[ind_ord,i]) } )
     cumulate <- matrix(apply (errore[ind_ord,,drop=FALSE], 2, cumsum), nrow=n, ncol=p)
-#   
+  
    sel <- rep(0,n)
-   flag <- NULL
-   flag <-  matrix(sapply(1:ncol(cumulate), function(i) {
-                                         fl<- rep(0,n)
-                                         fl[(abs(cumulate[,i]) > t.sel)] <- 1 
-                                         cbind(flag,fl)
-                                         }
-                            ), nrow=n, ncol=p)
+
+   flag <- abs(cumulate) > matrix(t.sel, n, p, byrow=TRUE)
+   mode(flag) <- "integer"
   
    ind <- which(rowSums (flag) > 0)
    if (length(ind) > 0) {
       k <- min(ind)                                                 
       sel[k:n] <- 1 
    }
-   
-   sel.y <- sapply(1:ncol(flag), function(i) {  
-                                         ind <- which(flag[,i] == 1)
-                                         if (length(ind) > 0) {
-                                            flag[(min(ind)):n,i] <<- 1
-                                            }
-                                         }
-                            )
-                    
-   
+
    appo <- dati[,1:ncol(dati), drop=FALSE]
    dati <- cbind(appo, cumulate,  flag, nrow(appo):1, sel )
    dati.ord<- dati[order(dati[,1]),2:ncol(dati),drop=FALSE] 
@@ -80,5 +75,3 @@
    dati.ord  
 
  } 
-
-  

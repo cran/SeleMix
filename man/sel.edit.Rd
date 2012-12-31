@@ -30,7 +30,7 @@
         }
                 
   \item{t.sel}{
-        threshold value for selective editing (default=0.01)   
+        optional vector of threshold values, one for each variable, for selective editing (default=0.01)   
         }
 
 }

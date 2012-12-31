@@ -9,7 +9,7 @@
 }
 \usage{
 sel.pairs(x, outl = rep(0, nrow(x)), sel = rep(0,nrow(x)), 
-          labs = NULL, log = TRUE)
+          labs = NULL, log = TRUE, legend=TRUE)
 }
 
 \arguments{
@@ -28,6 +28,9 @@ sel.pairs(x, outl = rep(0, nrow(x)), sel = rep(0,nrow(x)),
   \item{log}{
      if TRUE logarithm of \code{x} are plotted
 	}
+   \item{legend}{
+     if TRUE a legend is added to first boxplot
+	} 	
 }
 \details{
   The ijth scatterplot contains x[,i] plotted against x[,j]. Outliers are represented as blue circles,
