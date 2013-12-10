@@ -70,8 +70,8 @@ which variables contain an influential errors in a unit selected for the revisio
     \item{sel}{1 if the observation contains an influential error, 0 otherwise} 
 }
 \references{
-    Di Zio, M., Guarnera, U., Luzi, O. (2008) \emph{"Contamination models for the detection of outliers and influential errors in continuous multivariate data"},
-	UNECE Work Session on Statistical Data Editing, Vienna, 21-23 Aprile 2008 (\url{http://www.unece.org/stats/documents/2008.04.sde.htm}).\cr
+     Di Zio, M., Guarnera, U. (2013) \emph{"A Contamination Model for Selective Editing"}, 
+        Journal of Official Statistics. Volume 29, Issue 4, Pages 539-555 (\url{http://dx.doi.org/10.2478/jos-2013-0039}). \cr
 	
     Buglielli, M.T., Di Zio, M., Guarnera, U. (2010) \emph{"Use of Contamination Models for Selective Editing"}, 
     European Conference on Quality in Survey Statistics Q2010, Helsinki, 4-6 May 2010.
@@ -81,8 +81,10 @@ which variables contain an influential errors in a unit selected for the revisio
 }
 \examples{
 # Example 1
+# Parameter estimation with one contaminated variable and one covariate
     data(ex1.data)
     ml.par <- ml.est(y=ex1.data[,"Y1"], x=ex1.data[,"X1"])
+# Detection of influential errors    
     sel <- sel.edit(y=ex1.data[,"Y1"], ypred=ml.par$ypred)
     head(sel)
     sum(sel[,"sel"])

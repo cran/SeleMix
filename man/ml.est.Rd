@@ -99,6 +99,9 @@ is also showed until convergence.
  and non contaminated Gaussian models}
 }
 \references{
+     Di Zio, M., Guarnera, U. (2013) \emph{"A Contamination Model for Selective Editing"}, 
+        Journal of Official Statistics. Volume 29, Issue 4, Pages 539-555 (\url{http://dx.doi.org/10.2478/jos-2013-0039}). \cr
+        
      Buglielli, M.T., Di Zio, M., Guarnera, U. (2010) \emph{"Use of Contamination Models for Selective Editing"}, 
         European Conference on Quality in Survey Statistics Q2010, Helsinki, 4-6 May 2010
 }

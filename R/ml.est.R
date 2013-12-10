@@ -14,7 +14,6 @@ ml.est <- function (y, x=NULL, model = "LN", lambda=3,  w=0.05, lambda.fix=FALSE
 #  lambda = fattore di inflazione della varianza
 #  graph = visualizzazione dei grafici durante l'elaborazione
 #------------------------------------------------------------------------------
-  require(mvtnorm)  
 
 #------------------------------------------------------------------------------
 # Copio i dati di input su aree di appoggio
