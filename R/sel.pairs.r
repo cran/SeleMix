@@ -1,13 +1,15 @@
 #   A matrix of scatterplots with outliers and influentials units highlighted is produced
 sel.pairs <- function (x, outl = rep(0, nrow(x)), sel = rep(0, nrow(x)), labs = NULL,
-    log = TRUE, legend=TRUE )
+    log = TRUE, legend=TRUE, title=NULL )
 {
     if (!inherits(x, c("matrix", "data.frame")))
         stop("data must be supplied as matrix or data frame ")
+  
     testo_legenda <- c("Only Outlier           ", 
                        "Only Influential       ", 
                        "Outlier and Influential")
-    titolo = "Selective Editing - outliers and influential errors"
+    if (is.null(title))
+      title <- "Selective Editing - outliers and influential errors"
     nvar1 <- ncol(x)
     if (is.null(labs)) {
         if (length(colnames(x) > 0))
@@ -26,7 +28,7 @@ sel.pairs <- function (x, outl = rep(0, nrow(x)), sel = rep(0, nrow(x)), labs = 
             if (i == j) {
                 boxplot(x[, i], main = NULL, col = "peachpuff",
                   horizontal = TRUE
-#                , names = labs[i], show.names=TRUE
+                , names = labs[i], show.names=TRUE
                 )
                 aa <- x[outl == 1 & sel == 0, i]
                 points(aa, rep(1, length(aa)), pch = 21, cex = 1.2,
@@ -39,7 +41,7 @@ sel.pairs <- function (x, outl = rep(0, nrow(x)), sel = rep(0, nrow(x)), labs = 
                 points(aa, rep(1, length(aa)), pch = 24, cex = 1.2,
                   col = "red4", bg = "red") 
                 par(mgp=c(2,1,0))
-                title(xlab = labs[i], col.lab = "red3", cex=1.2, font.lab=2)
+  #              title(ylab = labs[i], col.lab = "red3", cex=1.2, font.lab=2, outer=FALSE)
                 par(mgp=c(3,1,0))
 
                 if (i == 1 & j == 1 & legend == TRUE) {
@@ -66,5 +68,5 @@ sel.pairs <- function (x, outl = rep(0, nrow(x)), sel = rep(0, nrow(x)), labs = 
 
         }
     }
-    mtext(titolo, outer = TRUE)    
-}  
+    mtext(title, side= 3, outer = TRUE)    
+  }  

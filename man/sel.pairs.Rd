@@ -9,7 +9,7 @@
 }
 \usage{
 sel.pairs(x, outl = rep(0, nrow(x)), sel = rep(0,nrow(x)), 
-          labs = NULL, log = TRUE, legend=TRUE)
+          labs = NULL, log = TRUE, legend=TRUE, title=NULL)
 }
 
 \arguments{
@@ -30,6 +30,9 @@ sel.pairs(x, outl = rep(0, nrow(x)), sel = rep(0,nrow(x)),
 	}
    \item{legend}{
      if TRUE a legend is added to first boxplot
+	} 
+   \item{title}{
+     an overall title for the plot
 	} 	
 }
 \details{

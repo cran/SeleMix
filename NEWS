@@ -1,3 +1,7 @@
+version 1.0.1
+- Fixed a bug in ml.est: function pred.y now receives the optional parameter tau
+- Added new options for sel.pairs 
+- Added new function sel.plot
 version 0.9.0
 - some work on vignette
 - Fixed a bug in ml.est: a vector of covariate is now accepted.

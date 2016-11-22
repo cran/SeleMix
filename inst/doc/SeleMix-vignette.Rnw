@@ -364,7 +364,7 @@ est1$is.conv       # TRUE convergence is reached
 est1$n.iter        # number of iterations
 @
 \noindent
-In order to evaluate goodness of fit, BIC and CAIC are computed both for the contamination model and for the simple Gaussian model ($\lambda=0$). This parameter should be used to prevent overfitting.
+In order to evaluate goodness of fit, BIC and AIC are computed  \citep{mvtnorm:2014} both for the contamination model and for the simple Gaussian model ($\lambda=0$). This parameter should be used to prevent overfitting.
 
 << >>=
 est1$bic.aic       # bic and aic 

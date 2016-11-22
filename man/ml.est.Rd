@@ -92,15 +92,17 @@ is also showed until convergence.
  \item{w }{estimated proportion of erroneous data}
  \item{tau }{vector of posterior probabilities of being contaminated}
  \item{outlier }{1 if the observation is classified as an outlier, 0 otherwise}
+ \item{n.outlier }{total of outlier observations}
  \item{pattern }{vector of non-response patterns for y variables: 0 = missing, 1 = present value}
  \item{is.conv }{logical value: TRUE if the EM algorithm has converged}
  \item{n.iter }{number of iterations of EM algorithm}
+ \item{sing }{if TRUE iteration are stopped because there is an almost perfect fit } 
  \item{bic.aic }{Bayesian Information Criterion and Akaike Information Criterion for contaminated 
  and non contaminated Gaussian models}
 }
 \references{
      Di Zio, M., Guarnera, U. (2013) \emph{"A Contamination Model for Selective Editing"}, 
-        Journal of Official Statistics. Volume 29, Issue 4, Pages 539-555 (\url{http://dx.doi.org/10.2478/jos-2013-0039}). \cr
+        Journal of Official Statistics. Volume 29, Issue 4, Pages 539-555 (\url{http://www.degruyter.com/view/j/jos.2013.29.issue-4/jos-2013-0039/jos-2013-0039.xml}). \cr
         
      Buglielli, M.T., Di Zio, M., Guarnera, U. (2010) \emph{"Use of Contamination Models for Selective Editing"}, 
         European Conference on Quality in Survey Statistics Q2010, Helsinki, 4-6 May 2010

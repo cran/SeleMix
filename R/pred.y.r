@@ -61,7 +61,7 @@ pred.y  <- function (y, x=NULL, B, sigma, lambda, w, model = "LN", t.outl=0.5)
          mu.bar1 <-  mu.bar2 <- mu.m
          diag.sigma.bar1 <- diag.sigma.bar2 <- diag(sigma.mm)
        
-         tau1 <- 1-pattern.corr[,"w"]   ### tau1 può essere qualsiasi numero perchè non ha più senso !!!
+         tau1 <- 1-pattern.corr[,"w"]   ### tau1 puo' essere qualsiasi numero perche' non ha piu' senso !!!
             
          
       } else {

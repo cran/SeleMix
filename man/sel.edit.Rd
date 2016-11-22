@@ -97,7 +97,7 @@ which variables contain an influential errors in a unit selected for the revisio
     sel.pairs(ex1.data[,c("X1","Y1")],outl=ml.par$outlier, sel=sel[,"sel"])
 # Example 2
     data(ex2.data)
-    ml.par <- ml.est(y=ex2.data)
-    sel <- sel.edit(y=ex2.data, ypred=ml.par$ypred)	
-    sel.pairs(ex2.data,outl=ml.par$outlier, sel=sel[,"sel"])
+    par.joint <- ml.est(y=ex2.data)
+    sel <- sel.edit(y=ex2.data, ypred=par.joint$ypred)	
+    sel.pairs(ex2.data,outl=par.joint$outlier, sel=sel[,"sel"])
 }
