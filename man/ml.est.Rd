@@ -102,7 +102,8 @@ is also showed until convergence.
 }
 \references{
      Di Zio, M., Guarnera, U. (2013) \emph{"A Contamination Model for Selective Editing"}, 
-        Journal of Official Statistics. Volume 29, Issue 4, Pages 539-555 (\url{http://www.degruyter.com/view/j/jos.2013.29.issue-4/jos-2013-0039/jos-2013-0039.xml}). \cr
+        Journal of Official Statistics. Volume 29, Issue 4, Pages 539-555
+        (\url{https://doi.org/10.2478/jos-2013-0039}). \cr
         
      Buglielli, M.T., Di Zio, M., Guarnera, U. (2010) \emph{"Use of Contamination Models for Selective Editing"}, 
         European Conference on Quality in Survey Statistics Q2010, Helsinki, 4-6 May 2010
@@ -118,8 +119,10 @@ is also showed until convergence.
         ml.par <- ml.est(y=ex1.data[,"Y1"], x=ex1.data[,"X1"], graph=TRUE) 
         str(ml.par)
         sum(ml.par$outlier)  # number of outliers
-# Parameter estimation with two contaminated variables and no covariates
+# Parameter estimation with two contaminated variables and no covariates   
+\dontrun{ 
         data(ex2.data)
         par.joint <- ml.est(y=ex2.data, x=NULL, graph=TRUE)  
-        sum(par.joint$outlier)  # number of outliers           
+        sum(par.joint$outlier)  # number of outliers  
+  }      
 }

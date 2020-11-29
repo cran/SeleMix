@@ -1,3 +1,5 @@
+version 1.0.2
+- Fixed minor bugs
 version 1.0.1
 - Fixed a bug in ml.est: function pred.y now receives the optional parameter tau
 - Added new options for sel.pairs 

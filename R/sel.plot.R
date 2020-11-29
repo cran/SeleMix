@@ -31,7 +31,7 @@
 #-------------------------------------------------------------------------------------------
    if (!inherits(data,c("data.frame", "matrix"))  )  {
       warning( "Variables must be supplied as a matrix or as a data frame ")
-      return
+      return()
    }
    data <- as.data.frame(data)
    

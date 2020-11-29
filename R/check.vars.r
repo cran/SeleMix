@@ -1,13 +1,12 @@
 
 check.vars <- function (y, x, model="LN", parent="pred.y") {
 #print(parent.env(env) )  vedere come posso conoscere il nome della funzione chiamante (altrimenti lo passo)
-
+   y <- as.matrix (y)
    lista  <- list(ret=0, msg.err=NULL, y=NULL, x=NULL)
 #   ERRORI BLOCCANTI
-   if (!is.numeric(as.matrix(y))  )  {
+   if (!is.numeric(y)  )  {
       lista$msg.err <- "Variables must be numeric "
       lista$ret <- -9
-      
    }
    else if (!inherits(y,c("data.frame", "matrix","numeric", "integer"))  )  {
       lista$msg.err <- "Variables must be supplied as a matrix or as a data frame "
@@ -26,7 +25,6 @@ check.vars <- function (y, x, model="LN", parent="pred.y") {
    }
 
 
-   y <- as.matrix (y)
    n <- nrow(y)
    if (!is.null(x)) {
       x<- as.matrix(x)
