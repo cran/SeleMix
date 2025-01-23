@@ -3,22 +3,19 @@ check.vars <- function (y, x, model="LN", parent="pred.y") {
 #print(parent.env(env) )  vedere come posso conoscere il nome della funzione chiamante (altrimenti lo passo)
    y <- as.matrix (y)
    lista  <- list(ret=0, msg.err=NULL, y=NULL, x=NULL)
-#   ERRORI BLOCCANTI
+#  problema with inputs
    if (!is.numeric(y)  )  {
       lista$msg.err <- "Variables must be numeric "
       lista$ret <- -9
    }
-   else if (!inherits(y,c("data.frame", "matrix","numeric", "integer"))  )  {
-      lista$msg.err <- "Variables must be supplied as a matrix or as a data frame "
+   else if (!inherits(y, c("data.frame", "matrix", "numeric", "integer")))  {
+      lista$msg.err <- "Variables must be supplied as a matrix or as a dataframe "
       lista$ret <- -9
    }
    else if ( model == 'LN' && sum(y<0, na.rm=TRUE) > 0 )  {
         lista$msg.err <-"Negative values are not allowed if model is LN\n"
         lista$ret <- -9
    }
-#------------------------------------------------------------------------------ 
-#  Aggiunte il 25/02/2016  
-#------------------------------------------------------------------------------    
    else if ( sum(is.nan(y), na.rm=TRUE) > 0 || sum(is.infinite(y), na.rm=TRUE) > 0)  {
         lista$msg.err <-" +/- Inf and NaN values are not allowed \n"
         lista$ret <- -9
@@ -54,22 +51,22 @@ check.vars <- function (y, x, model="LN", parent="pred.y") {
        return (lista)
 #    WARNING
 
-
-#   PREPARAZIONE DATI IN BASE AL MODELLO
+####---------------------------------------------------------------------
+#   PREPARE DATA aCCORDING TO THE CHOSEN MODEL
   modificati <- 0 
   if (model == "LN") {  #lognormal model
       for (i in 1:ncol(y)) {
         #y[,i] <- sostituisci_zeri(y[,i])
         n.zeri <- length(which(y[,i] == 0))
         if (n.zeri > 0)  {
-          ind0<-which(y[,i]==0)
-          new.val <- min(y[,i][-ind0])/2
-          y[ind0,i]<- new.val
+          ind0 <- which(y[,i]==0)
+          new.val <- min(y[,i][-ind0])/2 # 1/2 of smaller val >0
+          y[ind0, i]<- new.val
           modificati <- modificati + n.zeri
         } 
       }
       if (parent!="ml.est" && modificati > 0)  {
-          lista$ret <- lista$ret+1
+          lista$ret <- lista$ret + 1
           lista$msg.err <-  rbind( lista$msg.err,                 
                 paste(modificati," response variable values (%", round(modificati*100/n, 2),
                        ") equal 0 are substituted by the half minimum of the corresponding variable\n",sep="") )
@@ -84,9 +81,9 @@ check.vars <- function (y, x, model="LN", parent="pred.y") {
        
          n.zeri <- length(which(x[,i] == 0))
          if (n.zeri > 0)  {
-          ind0<-which(x[,i]==0)
+          ind0 <- which(x[,i]==0)
           new.val <- min(x[,i][-ind0])/2
-          x[ind0,i]<- new.val
+          x[ind0,i] <- new.val
           modificati <- modificati + n.zeri
         } 
       }
@@ -107,7 +104,7 @@ check.vars <- function (y, x, model="LN", parent="pred.y") {
      x <- x
   }
    lista$y <- y
-   lista$x <- as.matrix(cbind(rep(1,n),x))
+   lista$x <- as.matrix(cbind(rep(1,n), x))
    return (lista)
  }
  

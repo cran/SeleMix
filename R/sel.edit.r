@@ -21,29 +21,28 @@
    if (is.null(colnames(ypred)))
        colnames(ypred)<-paste(colnames(y),".p",sep="")    
        
- # Assumo che nel caso di y=NA il valore sia sostituito dal valore previsto dal modello 
- #  cioe' che la previsione sia esatta
+ # if y=NA ithe missing values is replaced by the model prediction
    ind <- which(is.na(y))
    y[ind] <- ypred[ind]
    
- # CALCOLO DEL PUNTEGGIO: rapporto fra l'errore atteso e la stima di riferimento (TOTALE)
+ # estimatye score: expected error wrt to the estimated total
    errore <- (wgt * (y - ypred) )/ matrix(rep(tot,n), n, p, byrow=TRUE)
    score <- abs(errore) 
 
- # definizione di un vettore per l'ordinamento: massimo fra i valori assoluti dei punteggi delle variabili 
+ # sorting procedure
  # score_sas <- errore^2
 
     global.score <- sapply (1:n, function(i) { max(score[i, ])})
 
-#  INDICE ORDINATO
-   ind_ord <- order(global.score)  #ordinamento  crescente
+#  ordered score
+   ind_ord <- order(global.score)  #increasing order
  
-# MATRICE DEI DATI ORDINATA IN BASE AL VALORE DELLO |SCORE| 
+# matrix sorted by incresing |SCORE| 
 
    dati <- cbind( id[ind_ord], y[ind_ord,,drop=FALSE], ypred[ind_ord,,drop=FALSE], wgt[ind_ord], 
                   score[ind_ord,,drop=FALSE], global.score[ind_ord] )
                  
-# CALCOLO DELL'ERRORE CUMULATO  
+# determine cumated error
     cumulate <- matrix(apply (errore[ind_ord,,drop=FALSE], 2, cumsum), nrow=n, ncol=p)
   
    sel <- rep(0,n)

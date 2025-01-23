@@ -1,7 +1,7 @@
 #exportPattern("^[^\\.]")
 export(ml.est,pred.y,sel.edit,sel.pairs,sel.plot)
 #import(mvtnorm)
-importFrom(mvtnorm, dmvnorm)
+importFrom("mvtnorm", "dmvnorm")
 importFrom("grDevices", "dev.off", "jpeg", "xy.coords")
 importFrom("graphics", "boxplot", "identify", "mtext", "par", "plot",
              "points", "text")

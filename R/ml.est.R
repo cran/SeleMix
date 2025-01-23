@@ -1,18 +1,35 @@
-ml.est <- function (y, x=NULL, model = "LN", lambda=3,  w=0.05, lambda.fix=FALSE, w.fix=FALSE, eps=1e-7, max.iter=500, t.outl=0.5, graph=FALSE)
+#' Identification of outliers based on a mixture of 2 Gaussian distributions
+#'
+#' @param y matrix or data.frame with the response variable(s), 
+#' assumed to be affected by outliers 
+#' @param x matrix or data.frame with the predictors, assumed 
+#' to be free of errors (no missing values allowed)
+#' @param model assumed distribution N= Gaussian while LN stands for
+#' LogNormal (default)
+#' @param lambda numeric indicated the variance inflation factor (default is 3)
+#' @param w numeric indicating the (apriori) proportion of contaminated (outliers) data
+#' (default is 0.05)
+#' @param lambda.fix logical, whether lambda parameter should be kept
+#' fixed or can change during the fitting procedure (default FALSE)
+#' @param w.fix ogical, whether  w parameter should be kept
+#' fixed or can change during the fitting procedure (default FALSE)
+#' @param eps tolerance for assessing convergence of the iterative procedure
+#' @param max.iter numeric indicating the maximum number of iteration of the
+#' estimation procedure based on EM algorithm (default is 500)
+#' @param t.outl numeric threshold, between 0 and 1, for identifying possible 
+#' errors, units whose estimated probability of being in the contaminated
+#' distributions are >t.outl are identified as errors
+#' @param graph logical, wheter a graph summarizing the iterative fitting 
+#' procedure should be plotted (default FALSE)
+#'
+#' @returns
+#' @export
+#'
+#' @examples
+ml.est <- function (y, x=NULL, model = "LN", lambda=3,  
+                    w=0.05, lambda.fix=FALSE, w.fix=FALSE, 
+                    eps=1e-7, max.iter=500, t.outl=0.5, graph=FALSE)
 {
-#------------------------------------------------------------------------------
-#           Individuazione degli outlier basata su un modello mistura di 2 gaussiane
-#------------------------------------------------------------------------------
-#         PARAMETRI 
-#  y  = matrice ( o data.frame) -  Variabili dipendenti (con possibili errori)
-#  x  = matrice ( o data.frame) - Variabili indipendenti (dati esatti. P.e. da archivio amministrativo)
-#  model = Indica se i dati osservati hanno distribuzione log-normale (LN) o normale (N).
-#  w = proporzione dei dati contaminati (peso a priori) 
-#  max.iter = numero massimo di iterazioni per la convergenza EM
-#  eps = soglia di accettazione
-#  lambda = fattore di inflazione della varianza
-#  graph = visualizzazione dei grafici durante l'elaborazione
-#------------------------------------------------------------------------------
   ris<-list(
     ypred = NA,  
     B=NA, 
@@ -31,13 +48,12 @@ ml.est <- function (y, x=NULL, model = "LN", lambda=3,  w=0.05, lambda.fix=FALSE
     model=model
   )
 #------------------------------------------------------------------------------
-# Copio i dati di input su aree di appoggio
+# copy of input data
 #------------------------------------------------------------------------------
   memo.y <- y <- as.matrix(y)         
   memo.x <- x
 #------------------------------------------------------------------------------
-#        CONTROLLI SUI PARAMETRI 
-#  Eliminazione dei record contenenti missing per la stima dei parametri
+#        Checks on input data
 #------------------------------------------------------------------------------  
   ind.NA<- which(rowSums(is.na(y)) >0)
 
@@ -52,7 +68,7 @@ ml.est <- function (y, x=NULL, model = "LN", lambda=3,  w=0.05, lambda.fix=FALSE
 	  }	  
    }
 #------------------------------------------------------------------------------
-#        CONTROLLI SUI PARAMETRI 
+#        checks on the input arguments
 #------------------------------------------------------------------------------
   vars <- check.vars(y,x,model,parent="ml.est")
 
@@ -75,11 +91,7 @@ ml.est <- function (y, x=NULL, model = "LN", lambda=3,  w=0.05, lambda.fix=FALSE
   q <- ncol(x) 
 #------------------------------------------------------------------------------  
   
-
-    
-
- 
-#---------------------       DEFINIZIONE VARIABILI       ---------------------
+#---------------------       DEFine variables       ---------------------
   conv <- FALSE
   continua <- TRUE
   lik<-NA
@@ -88,7 +100,7 @@ ml.est <- function (y, x=NULL, model = "LN", lambda=3,  w=0.05, lambda.fix=FALSE
   iter <- 0
   sing <- FALSE
   
-  if (ncol(x)+ ncol(y) < 3)   # INSERIRE BOXPLOT
+  if (ncol(x)+ ncol(y) < 3)   
       graph=FALSE 
   if (graph )   {
    lambda_all <- lambda
@@ -117,25 +129,25 @@ ml.est <- function (y, x=NULL, model = "LN", lambda=3,  w=0.05, lambda.fix=FALSE
   sigma2 <- (1 + lambda) * sigma  
   w1 <- 1-w
 #------------------------------------------------------------------------------  
-#   CALCOLO DEL BIC per il modello normale da usare per i confronti
+#   estimates BIC for comparing models
 #------------------------------------------------------------------------------  
-# N. parametri per il modello normale
+# No. parameters for Gaussina distribution
     k1 <- ncol(x) * p + (p*(p+1))/2 # p=ncol(y) 
-# N. parametri per il modello di contaminazione
+# No. parameters for contamined model
     k2 <- k1 + 2 - w.fix - lambda.fix  
     
  if (n < k2)  {
       warning(paste("Input data are fewer than the number of model parameters\n" ))
  }
 #------------------------------------------------------------------------------      
-# Calcolo della verisimiglianza normale
+# estima lokelihood
 #------------------------------------------------------------------------------  
-    dati<-cbind(x,y)
+    dati <- cbind(x, y)
     norm.mv<-function(u){dmvnorm(u[q+1:p], t(B0)%*%u[1:q], sigma0, log=TRUE)}
-    lik.n <- sum(apply(dati,1,norm.mv))  
+    lik.n <- sum(apply(dati, 1, norm.mv))  
   BIC.n <- -2*lik.n + k1*log(n)  
   
-#************************  INIZIO CICLO EM  ************************************
+#************************  Start EM  ************************************
 
   while (iter < max.iter & continua == TRUE)
   {
@@ -146,7 +158,7 @@ ml.est <- function (y, x=NULL, model = "LN", lambda=3,  w=0.05, lambda.fix=FALSE
     tau2 <- 1 - tau1 
 #***********************    M - STEP         ************************************    
 #    print(paste("M-step",iter))
-#***********************    calcolo dei pesi  **********************************
+#***********************    estimate weights  **********************************
      if (!w.fix)
          w1 <- sum(tau1)/n;
 
@@ -195,21 +207,18 @@ ml.est <- function (y, x=NULL, model = "LN", lambda=3,  w=0.05, lambda.fix=FALSE
      }
     
   
-#***********************    CONVERGENZA      **********************************
+#***********************    convergence      **********************************
 
-
-     
      s2 <- s1 / (1 + lambda) 
      sigma2 <- (1+lambda)* sigma 
      q1 <- matrix(tensorizza (dif, s1),n,1) 
      q2 <- matrix(tensorizza (dif, s2),n,1) 
      rm (s1,s2)
-    
-     
+
      q1 <- -0.5*q1
      q2 <- -0.5*q2
      
-     ll <- w1 * exp(q1)  / sqrt(2*pi*det(sigma)) + (1-w1) * (exp(q2)) / sqrt(2*pi*det(sigma2))
+     ll <- w1 * exp(q1) / sqrt(2*pi*det(sigma)) + (1-w1) * (exp(q2)) / sqrt(2*pi*det(sigma2))
      lik <- sum(log(ll))
      
      if (graph)   {     
@@ -237,24 +246,22 @@ ml.est <- function (y, x=NULL, model = "LN", lambda=3,  w=0.05, lambda.fix=FALSE
         lik0 <- lik
    
   }
- #************************  FINE CICLO EM  ************************************
+ #************************ end EM  ************************************
 
     if (iter >= max.iter)  
      conv <- FALSE
-#   CALCOLO DEI VALORI PREVISTI
+#   estimate predicted values
    
       yprev <-  pred.y(y=memo.y, x=memo.x, B, sigma, 
                      lambda, w=1-w1, model = model, t.outl=t.outl)    
  
-   ###############  calcolo di BIC e AIC per i due modelli #############
+   ###############  estimate BIC e AIC  #############
   
-   
      BIC.n <- -2*lik.n + k1*log(n)
      BIC.mix <- -2*lik + k2*log(n)
      AIC.n <- 2*k1 - lik.n   
      AIC.mix <- 2*k2 - lik   
-  
-     
+
      ris$ypred <- as.matrix(yprev[,1:(ncol(yprev)-3)])
      ris$B <- B 
      ris$sigma <- sigma

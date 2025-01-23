@@ -1,7 +1,7 @@
 
 pred.y  <- function (y, x=NULL, B, sigma, lambda, w, model = "LN", t.outl=0.5) 
 {
-  # model - valori ammissibili: "N", "LN" 
+  
 
    vars <- check.vars(y,x,model,parent="pred.y")
 
@@ -55,7 +55,7 @@ pred.y  <- function (y, x=NULL, B, sigma, lambda, w, model = "LN", t.outl=0.5)
       sigma.bar.om <- (lambda * sigma.om) / (lambda + 1)      # Non si usa
       
           
-    ############   attenzione: modifiche fatte da ugo: !!!!!  
+    ############   attenzione: modd by Ugo: !!!!!  
       if (sum(ind.obs) == 0)  {
          
          mu.bar1 <-  mu.bar2 <- mu.m
@@ -83,7 +83,7 @@ pred.y  <- function (y, x=NULL, B, sigma, lambda, w, model = "LN", t.outl=0.5)
 
            }
            
-############   attenzione: modifiche fatte da ugo: !!!!!        
+############   attenzione: mods by Ugo: !!!!!        
         if (model == "LN") {
         
         # diag.sigma.bar1 <- c(rep(0,ncol(mu.o)),  diag(sigma.res.mo))
