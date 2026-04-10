@@ -8,7 +8,7 @@
     Provides predictions of y variables according to a Gaussian contamination model
 }
 \usage{
-    pred.y (y, x=NULL, B, sigma, lambda, w, model="LN", t.outl=0.5)
+    pred.y (y, x=NULL, B, sigma, lambda, w, model="N", t.outl=0.5)
 }
 
 \arguments{

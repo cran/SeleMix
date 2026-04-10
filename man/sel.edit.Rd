@@ -83,7 +83,7 @@ which variables contain an influential errors in a unit selected for the revisio
 # Example 1
 # Parameter estimation with one contaminated variable and one covariate
     data(ex1.data)
-    ml.par <- ml.est(y=ex1.data[,"Y1"], x=ex1.data[,"X1"])
+    ml.par <- ml.est(y=ex1.data[,"Y1"], x=ex1.data[,"X1"], max.iter=50)
 # Detection of influential errors    
     sel <- sel.edit(y=ex1.data[,"Y1"], ypred=ml.par$ypred)
     head(sel)

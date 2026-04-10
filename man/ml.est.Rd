@@ -8,7 +8,7 @@
     Provides ML estimates of a Gaussian contamination model.
 }
 \usage{
-    ml.est (y, x=NULL, model = "LN", lambda=3,  w=0.05,
+    ml.est (y, x=NULL, model = "N", lambda=3,  w=0.05,
             lambda.fix=FALSE, w.fix=FALSE, eps=1e-7,  
             max.iter=500, t.outl=0.5, graph=FALSE)
 }
@@ -115,14 +115,15 @@ is also showed until convergence.
 \examples{
 
 # Parameter estimation with one contaminated variable and one covariate
+# few iterations for example purposes
         data(ex1.data)
-        ml.par <- ml.est(y=ex1.data[,"Y1"], x=ex1.data[,"X1"], graph=TRUE) 
+        ml.par <- ml.est(y=ex1.data[,"Y1"], x=ex1.data[,"X1"], graph=FALSE, max.iter=50) 
         str(ml.par)
         sum(ml.par$outlier)  # number of outliers
 # Parameter estimation with two contaminated variables and no covariates   
 \dontrun{ 
         data(ex2.data)
-        par.joint <- ml.est(y=ex2.data, x=NULL, graph=TRUE)  
+        par.joint <- ml.est(y=ex2.data, x=NULL, graph=FALSE)  
         sum(par.joint$outlier)  # number of outliers  
   }      
 }

@@ -4,8 +4,8 @@
 #' assumed to be affected by outliers 
 #' @param x matrix or data.frame with the predictors, assumed 
 #' to be free of errors (no missing values allowed)
-#' @param model assumed distribution N= Gaussian while LN stands for
-#' LogNormal (default)
+#' @param model assumed distribution N= Gaussian (default) while LN stands for
+#' LogNormal
 #' @param lambda numeric indicated the variance inflation factor (default is 3)
 #' @param w numeric indicating the (apriori) proportion of contaminated (outliers) data
 #' (default is 0.05)
@@ -26,7 +26,7 @@
 #' @export
 #'
 #' @examples
-ml.est <- function (y, x=NULL, model = "LN", lambda=3,  
+ml.est <- function (y, x=NULL, model = "N", lambda=3,  
                     w=0.05, lambda.fix=FALSE, w.fix=FALSE, 
                     eps=1e-7, max.iter=500, t.outl=0.5, graph=FALSE)
 {
@@ -281,6 +281,3 @@ ml.est <- function (y, x=NULL, model = "LN", lambda=3,
         warning (paste("EM algorithm failed to converge: stop after", iter, "iterations"))
     ris
  }
-
-
-

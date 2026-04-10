@@ -1,6 +1,6 @@
 Package: SeleMix
-Version: 1.0.3
-Date: 2025-01-20
+Version: 1.0.4
+Date: 2026-04-09
 Title: Selective Editing via Mixture Models
 Authors@R: c(person(given = "Ugo",
                     family = "Guarnera",
@@ -8,17 +8,22 @@ Authors@R: c(person(given = "Ugo",
                     email = "guarnera@istat.it"), 
 	        person(given = "Teresa",
                     family = "Buglielli",
+                    role = c("aut"),
+                    email = "teresa.buglielli@gmail.com"),
+		person(given = "Davide",
+                    family = "Di Cecco",
                     role = c("aut", "cre"),
-                    email = "teresa.buglielli@gmail.com")
+                    email = "dicecco@istat.it")
 	)
 Author: Ugo Guarnera [aut],
-  Teresa Buglielli [aut, cre]
-Maintainer: Teresa Buglielli <teresa.buglielli@gmail.com>
+  Teresa Buglielli [aut],
+  Davide Di Cecco [aut, cre]
+Maintainer: Davide Di Cecco <dicecco@istat.it>
 Description: Detection of outliers and influential errors using a latent variable model. 
 Depends: R (>= 2.7.0), mvtnorm
 Suggests: Ecdat, xtable
 License: EUPL
 NeedsCompilation: no
-Packaged: 2025-01-22 14:12:54 UTC; marc&gio
+Packaged: 2026-04-09 13:03:04 UTC; MarcelloDO
 Repository: CRAN
-Date/Publication: 2025-01-23 08:10:02 UTC
+Date/Publication: 2026-04-10 07:40:02 UTC

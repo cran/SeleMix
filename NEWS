@@ -1,3 +1,6 @@
+# version 1.0.4
+# - code commented 
+# - default  now is model="N" (Gaussian) instead of "LN" (Log-Normal)
 # version 1.0.3
 # - added comments to code
 # version 1.0.2
